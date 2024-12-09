@@ -150,21 +150,22 @@ var (
 	ErrGetOnlyOneSliceItemMoreThanOneItem = errors.New("cannot get only one slice item - slice contains more than one item")
 )
 
-func GetOnlyOneSliceItem[T any](items []*T, errs ...error) (ret *T, err error) {
+func GetOnlyOneSliceItem[T any](items []T, errs ...error) (ret T, err error) {
+	var zt T
 	if len(items) < 1 {
 		if len(errs) > 0 {
-			return nil, errs[0]
+			return zt, errs[0]
 		} else {
-			return nil, ErrGetOnlyOneSliceItemSliceIsEmpty
+			return zt, ErrGetOnlyOneSliceItemSliceIsEmpty
 		}
 	}
 	if len(items) > 1 {
 		if len(errs) > 1 {
-			return nil, errs[1]
+			return zt, errs[1]
 		} else if len(errs) > 0 {
-			return nil, errs[0]
+			return zt, errs[0]
 		} else {
-			return nil, ErrGetOnlyOneSliceItemMoreThanOneItem
+			return zt, ErrGetOnlyOneSliceItemMoreThanOneItem
 		}
 	}
 	return items[0], nil
