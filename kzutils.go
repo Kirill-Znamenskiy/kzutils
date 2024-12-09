@@ -1,11 +1,21 @@
 package kzutils
 
 import (
+	"errors"
 	"math"
+	"slices"
 	"strings"
 	"time"
 
 	"golang.org/x/exp/constraints"
+)
+
+var (
+	TakeValue = ConvertPtrToVal
+
+	TakePtr     = ConvertValToPtr
+	TakePointer = ConvertValToPtr
+	TakeAddress = ConvertValToPtr
 )
 
 func IsIn[T comparable](value T, okValues []T) bool {
@@ -18,17 +28,6 @@ func IsIn[T comparable](value T, okValues []T) bool {
 }
 func IsOneOf[T comparable](value T, okValues ...T) bool {
 	return IsIn(value, okValues)
-}
-
-func TakeValue[T any](ptr *T) T {
-	if ptr == nil {
-		var z T
-		return z
-	}
-	return *ptr
-}
-func TakeAddress[T any](value T) *T {
-	return &value
 }
 
 func TrimStringWithSpaces(str string, cutset string) string {
@@ -65,8 +64,8 @@ func InitMap[K comparable, V any, INT constraints.Integer](mp map[K]V, cnts ...I
 	}
 	return mp
 }
-func InitMapKey[K comparable, V any, INT constraints.Integer](mp map[K]V, key K, cnts ...INT) map[K]V {
-	mp = InitMap[K, V, INT](mp, cnts...)
+func InitMapKey[K comparable, V any](mp map[K]V, key K, cnts ...int) map[K]V {
+	mp = InitMap[K, V, int](mp, cnts...)
 	if _, ok := mp[key]; !ok {
 		var zv V
 		mp[key] = zv
@@ -114,9 +113,7 @@ func GrowSliceTo[T any](sl []T, targetCapacity int) (ret []T) {
 	if targetCapacity <= cap(sl) {
 		return sl
 	}
-	ret = make([]T, len(sl), targetCapacity)
-	copy(ret, sl)
-	return ret
+	return slices.Grow(ret, targetCapacity)
 }
 
 func SlicesIntersect[T comparable](sl1 []T, sl2 []T) (ret []T) {
@@ -142,4 +139,29 @@ func SlicesIntersect[T comparable](sl1 []T, sl2 []T) (ret []T) {
 func IsSliceContainsOneOf[T comparable](sl []T, okValues ...T) bool {
 	isect := SlicesIntersect(sl, okValues)
 	return len(isect) > 0
+}
+
+var (
+	ErrGetOnlyOneSliceItemSliceIsEmpty    = errors.New("cannot get only one slice item - slice is empty")
+	ErrGetOnlyOneSliceItemMoreThanOneItem = errors.New("cannot get only one slice item - slice contains more than one item")
+)
+
+func GetOnlyOneSliceItem[T any](items []*T, errs ...error) (ret *T, err error) {
+	if len(items) < 1 {
+		if len(errs) > 0 {
+			return nil, errs[0]
+		} else {
+			return nil, ErrGetOnlyOneSliceItemSliceIsEmpty
+		}
+	}
+	if len(items) > 1 {
+		if len(errs) > 1 {
+			return nil, errs[1]
+		} else if len(errs) > 0 {
+			return nil, errs[0]
+		} else {
+			return nil, ErrGetOnlyOneSliceItemMoreThanOneItem
+		}
+	}
+	return items[0], nil
 }
