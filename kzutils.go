@@ -10,13 +10,17 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
-var (
-	TakeValue = ConvertPtrToVal
+func TakePtr[T any](val T) *T     { return &val }
+func TakePointer[T any](val T) *T { return &val }
+func TakeAddress[T any](val T) *T { return &val }
 
-	TakePtr     = ConvertValToPtr
-	TakePointer = ConvertValToPtr
-	TakeAddress = ConvertValToPtr
-)
+func TakeValue[T any](ptr *T) T {
+	if ptr == nil {
+		var z T
+		return z
+	}
+	return *ptr
+}
 
 func IsIn[T comparable](value T, okValues []T) bool {
 	for _, okValue := range okValues {
