@@ -45,7 +45,7 @@ func TrimStringWithSpaces(str string, cutset string) string {
 	return str2
 }
 func TrimStringSpacesAndQuotes(str string) string {
-	return TrimStringWithSpacesAndQuotes(str, "")
+	return TrimStringWithSpaces(str, `'"`)
 }
 func TrimStringWithSpacesAndQuotes(str string, cutset string) string {
 	return TrimStringWithSpaces(str, `'"`+cutset)
