@@ -51,9 +51,9 @@ func TrimStringWithSpacesAndQuotes(str string, cutset string) string {
 	return TrimStringWithSpaces(str, `'"`+cutset)
 }
 
-func InitSlice[V any, INT constraints.Integer](sl []V, cnts ...INT) []V {
+func InitSlice[V any](sl []V, cnts ...int) []V {
 	if sl == nil {
-		var makeCnt INT
+		var makeCnt int
 		for _, cnt := range cnts {
 			makeCnt += cnt
 		}
@@ -61,9 +61,9 @@ func InitSlice[V any, INT constraints.Integer](sl []V, cnts ...INT) []V {
 	}
 	return sl
 }
-func InitMap[K comparable, V any, INT constraints.Integer](mp map[K]V, cnts ...INT) map[K]V {
+func InitMap[K comparable, V any](mp map[K]V, cnts ...int) map[K]V {
 	if mp == nil {
-		var makeCnt INT
+		var makeCnt int
 		for _, cnt := range cnts {
 			makeCnt += cnt
 		}
