@@ -44,8 +44,8 @@ func TrimStringWithSpaces(str string, cutset string) string {
 	}
 	return str2
 }
-func TrimStringSpacesAndQuotes(str string) string {
-	return TrimStringWithSpaces(str, "'\"")
+func TrimStringWithSpacesAndQuotes(str string, cutset string) string {
+	return TrimStringWithSpaces(str, `'"`+cutset)
 }
 
 func InitSlice[V any, INT constraints.Integer](sl []V, cnts ...INT) []V {
