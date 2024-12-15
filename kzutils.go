@@ -72,7 +72,7 @@ func InitMap[K comparable, V any](mp map[K]V, cnts ...int) map[K]V {
 	return mp
 }
 func InitMapKey[K comparable, V any](mp map[K]V, key K, cnts ...int) map[K]V {
-	mp = InitMap[K, V, int](mp, cnts...)
+	mp = InitMap[K, V](mp, cnts...)
 	if _, ok := mp[key]; !ok {
 		var zv V
 		mp[key] = zv
